@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/closetPage/page.tsx';
+import 'features/closet-page/page.tsx';
 
 void main() {
   runApp(const MyApp());

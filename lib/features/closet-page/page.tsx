@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import '../../components/CoolCard.dart';
+import '../../components/cool-card.dart';
 
 class ClosetView extends StatelessWidget {
   const ClosetView({Key? key}) : super(key: key);
