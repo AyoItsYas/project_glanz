@@ -39,8 +39,8 @@ class ClosetView extends StatelessWidget {
                   return CoolCard(
                     imagePath: cardData[index]['imagePath'] as String,
                     hideBottomBar: false,
-                    width: 300,
-                    height: 450,
+                    width: 340,
+                    height: 420,
                     bottomText: cardData[index]['bottomText'] as String,
                     progressValues: List<double>.from(cardData[index]['progressValues'] as List),
                     progressTexts: List<String>.from(cardData[index]['progressTexts'] as List),
@@ -48,10 +48,15 @@ class ClosetView extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: 20),
-            Pill(),
-            SizedBox(height: 20),
-            ColorBox(),
+            SizedBox(height: 10),
+            Pill(
+              text: "15/17"
+            ),
+            SizedBox(height: 10),
+            ColorBox(
+              height: 100,
+              width: 300,
+            ),
           ],
         ),
       ),

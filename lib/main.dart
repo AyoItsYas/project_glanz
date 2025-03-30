@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'features/closet-page/page.dart';
+import 'main-screen.dart';
+import 'components/navigator.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -49,18 +52,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ClosetView()),
-            );
-          },
-          child: const Text('Go to Closet'),
-        ),
-      ),
-    );
+    return CustomNavigator();
   }
 }

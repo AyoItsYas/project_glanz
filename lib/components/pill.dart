@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 
 class Pill extends StatelessWidget {
-  final bool hideBottomBar;
+  final String text;
+  final double height;
+  final double width;
 
-  Pill({this.hideBottomBar = true});
+  Pill({
+    required this.text,
+    this.width = 100, 
+    this.height = 50,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        width: 100,
-        height: 50,
+        width: width,
+        height: height,
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(10),
@@ -19,8 +25,9 @@ class Pill extends StatelessWidget {
         child: Stack(
           children: [
             Center(
-              child: Text(
-                "12/15",
+              child:
+                Text(
+                text,
                 style: TextStyle(
                   color: Colors.grey,
                   fontFamily: 'Unbounded',
