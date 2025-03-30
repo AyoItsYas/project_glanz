@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class ColorBox extends StatelessWidget {
   final bool hideBottomBar;
-  final int _width;
-  final int _height;
+  final double width;  // Changed to double
+  final double height;  // Changed to double
   final String text;
 
   ColorBox({
     this.hideBottomBar = true,
-    this._width = 200,
-    this._height = 150,
+    this.width = 250.0,  // Default value updated to double
+    this.height = 100.0,  // Default value updated to double
     this.text = "",
   });
 
@@ -17,12 +17,12 @@ class ColorBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        width: _width,
-        height: _height,
+        width: width,  // Changed to use width
+        height: height,  // Changed to use height
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.white, width: 0.5),
+          border: Border.all(color: Colors.grey, width: 0.5),
         ),
         child: Stack(
           children: [

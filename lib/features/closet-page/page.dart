@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../components/cool-card.dart';
 import '../../components/pill.dart';
-import '../../components/colorbox.dart';
+import '../../components/color-box.dart';
 
 class ClosetView extends StatelessWidget {
   const ClosetView({Key? key}) : super(key: key);
@@ -24,6 +24,8 @@ class ClosetView extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Pill(),
+            SizedBox(height:20),
+            ColorBox(),
           ],
         ),
       ),
