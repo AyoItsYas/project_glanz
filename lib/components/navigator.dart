@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../features/closet-page/page.dart';
 import '../main-screen.dart';
+import '../features/quick-match/page.dart';
+import '../features/laundry/page.dart';
 
 class CustomNavigator extends StatefulWidget {
   CustomNavigator({Key? key}) : super(key: key);
@@ -16,8 +18,8 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   final List<Widget> _pages = [
     MainView(),
     ClosetView(),
-    Center(child: Text('Clothing Page')),
-    Center(child: Text('Laundry Page')),
+    QuickMatchView(),
+    LaundryView(),
     Center(child: Text('Settings Page')),
   ];
 
