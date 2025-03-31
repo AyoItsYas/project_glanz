@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../../components/cool-card.dart';
 
 class QuickMatchView extends StatelessWidget {
+  const QuickMatchView({super.key});
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
