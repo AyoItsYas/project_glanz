@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'components/cool-card.dart';
 import 'components/pill.dart';
+import 'services/db_helper.dart'; // Import your database helper
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -15,9 +16,12 @@ class _MainViewState extends State<MainView> with SingleTickerProviderStateMixin
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
 
+  String _firstName = "User"; // Default value before fetching
+
   @override
   void initState() {
     super.initState();
+    _fetchUserName();
 
     _animationController = AnimationController(
       vsync: this,
@@ -39,6 +43,18 @@ class _MainViewState extends State<MainView> with SingleTickerProviderStateMixin
     _animationController.forward(); // Start the animation
   }
 
+  Future<void> _fetchUserName() async {
+    try {
+      String fullName = await DatabaseHelper.instance.getUserFullName(); // Replace with your DB query
+      List<String> nameParts = fullName.split(" ");
+      setState(() {
+        _firstName = nameParts.isNotEmpty ? nameParts[0] : fullName; // Extract first name
+      });
+    } catch (e) {
+      print("Error fetching name: $e");
+    }
+  }
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -55,7 +71,6 @@ class _MainViewState extends State<MainView> with SingleTickerProviderStateMixin
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Apply animation to CoolCard
                   SlideTransition(
                     position: _slideAnimation,
                     child: FadeTransition(
@@ -65,7 +80,7 @@ class _MainViewState extends State<MainView> with SingleTickerProviderStateMixin
                         child: CoolCard(
                           imagePath: 'lib/assets/logo.svg',
                           hideBottomBar: false,
-                          bottomText: 'Hi Zerone !',
+                          bottomText: 'Hi $_firstName!',
                           bottomSubtext: 'Welcome to Glanz, We will help you come out of the closet',
                           height: 350,
                           width: 340,
@@ -77,7 +92,6 @@ class _MainViewState extends State<MainView> with SingleTickerProviderStateMixin
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Apply slide animation to Pill
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: Pill(
@@ -91,7 +105,6 @@ class _MainViewState extends State<MainView> with SingleTickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Apply scale and fade animations to Pills
                           FadeTransition(
                             opacity: _fadeAnimation,
                             child: ScaleTransition(
