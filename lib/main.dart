@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import the flutter_svg package
+import 'package:sqflite/sqflite.dart';
+import 'dart:io';
+import 'package:path/path.dart' as path; // Import path with an alias
+import 'auth/page.dart';
 import 'features/closet-page/page.dart';
 import 'main-screen.dart';
 import 'components/navigator.dart';
+import 'features/closet-page/view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -68,19 +73,57 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
+      begin: const Offset(0, -1), // Start off-screen above
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.forward();
 
     // Simulating a splash screen with a delay before transitioning to the home page
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
-    });
+    _checkDatabase();
+  }
+
+  Future<void> _checkDatabase() async {
+    // Path to the database file
+    String dbPath = path.join(await getDatabasesPath(), 'glanz_db.db');
+
+    if (await File(dbPath).exists()) {
+      // Database exists, proceed to HomePage
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      });
+    } else {
+      // Database does not exist, show a popup
+      Future.delayed(const Duration(seconds: 3), () {
+        _showDatabaseError();
+      });
+    }
+  }
+
+  void _showDatabaseError() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Database Missing'),
+          content: const Text('The required database does not exist.'),
+          actions: [
+            TextButton(
+              onPressed:
+                  () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  RegUi()),
+                  ),
+              child: const Text('Sign In or Create Account'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
