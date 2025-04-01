@@ -4,7 +4,7 @@ import '../../components/pill.dart';
 import '../../components/color-box.dart';
 
 class ClosetView extends StatelessWidget {
-  const ClosetView({Key? key}) : super(key: key);
+  const ClosetView({super.key});
 
   @override
   Widget build(BuildContext context) {

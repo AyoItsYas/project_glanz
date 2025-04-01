@@ -6,7 +6,7 @@ class ColorBox extends StatelessWidget {
   final double height;
   final String text;
 
-  ColorBox({
+  const ColorBox({super.key, 
     this.hideBottomBar = true,
     this.width = 250.0,
     this.height = 100.0,
