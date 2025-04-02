@@ -3,6 +3,8 @@ import 'package:project_glanz/components/cool-button.dart';
 import 'package:project_glanz/components/cool-input-box.dart';
 import '../components/cool-card.dart';
 import '../services/db_helper.dart';
+import 'package:flutter/services.dart';
+import 'package:project_glanz/auth/welcome.dart';
 
 class Question extends StatefulWidget {
   const Question({super.key});
@@ -15,7 +17,8 @@ class _QuestionState extends State<Question> {
   Offset _offset = const Offset(0, 1);
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -45,6 +48,16 @@ class _QuestionState extends State<Question> {
     try {
       await DatabaseHelper.instance.createUser(fullName, password);
       _showDialog("Success", "User created successfully!");
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => const WelcomeView(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
     } catch (e) {
       _showDialog("Error", "User creation failed: ${e.toString()}");
     }
@@ -112,10 +125,7 @@ class _QuestionState extends State<Question> {
                 onPressed: _createUser,
               ),
               const SizedBox(height: 10),
-              CoolButton(
-                text: "Switch User",
-                width: 300,
-              ),
+              CoolButton(text: "Switch User", width: 300),
             ],
           ),
         ),

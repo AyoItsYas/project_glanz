@@ -8,21 +8,19 @@ class ClosetView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define the data structure for each card with more specific types
     final cardData = [
       {
         'imagePath': 'lib/assets/demo.png',
         'bottomText': "Usage Statistics",
         'progressValues': [0.9, 0.33],
-        'progressTexts': ["Cycles", "Yeet"],
+        'progressTexts': ["Cycles", "Times in Laundry"],
       },
       {
         'imagePath': 'lib/assets/demo2.png',
-        'bottomText': "Statistics Overview",
+        'bottomText': "Usage Statistics",
         'progressValues': [0.6, 0.5],
-        'progressTexts': ["Cycles", "Yeet"],
+        'progressTexts': ["Cycles", "Times in Laundry"],
       },
-      // Add more card data here as needed
     ];
 
     return Scaffold(

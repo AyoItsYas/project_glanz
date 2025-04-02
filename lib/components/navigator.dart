@@ -3,6 +3,7 @@ import '../features/closet-page/page.dart';
 import '../main-screen.dart';
 import '../features/quick-match/page.dart';
 import '../features/laundry/page.dart';
+import '../features/settings-page/page.dart';
 
 class CustomNavigator extends StatefulWidget {
   const CustomNavigator({super.key});
@@ -20,7 +21,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
     ClosetView(),
     QuickMatchView(),
     LaundryView(),
-    Center(child: Text('Settings Page')),
+    Settings(),
   ];
 
   void _onItemTapped(int index) {
@@ -39,7 +40,8 @@ class _CustomNavigatorState extends State<CustomNavigator> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        physics: NeverScrollableScrollPhysics(), // Disable swipe to prevent manual page changes
+        physics:
+            NeverScrollableScrollPhysics(), // Disable swipe to prevent manual page changes
         children: _pages,
       ),
       bottomNavigationBar: Container(

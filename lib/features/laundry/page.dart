@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import '../../components/pill.dart';
 import '../../components/cool-card.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../services/weather-provider.dart';
 
 class LaundryView extends StatelessWidget {
   const LaundryView({super.key});
+
+  Future<Map<String, String>> _fetchWeatherData() async {
+    WeatherProvider weatherProvider = WeatherProvider();
+    return await weatherProvider.fetchWeatherData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +18,7 @@ class LaundryView extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: SingleChildScrollView( // Add SingleChildScrollView here
+        child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -23,31 +29,53 @@ class LaundryView extends StatelessWidget {
                 rowHeight: 40.0,
               ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Pill(
-                    text: "Rainy ",
-                    weather: "rainy",
-                    width: screenWidth * 0.45,
-                    height: 100,
-                  ),
-                  SizedBox(width: 20),
-                  Pill(
-                    text: "8km/h ",
-                    weather: 'windy',
-                    width: screenWidth * 0.45,
-                    height: 100,
-                  )
-                ],
+              // Use FutureBuilder to load weather data
+              FutureBuilder<Map<String, String>>(
+                future: _fetchWeatherData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    Map<String, String> weatherData = snapshot.data!;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Pill(
+                          text: "${weatherData["weatherCondition"]!} ",
+                          weather: weatherData["weatherCondition"]!,
+                          width: screenWidth * 0.45,
+                          height: 100,
+                        ),
+                        SizedBox(width: 20),
+                        Pill(
+                          text: "${weatherData["windSpeed"]}",
+                          weather: 'windy',
+                          width: screenWidth * 0.45,
+                          height: 100,
+                        ),
+                      ],
+                    );
+                  }
+                  return Container();
+                },
               ),
               SizedBox(height: 20),
               Pill(
                 text: "",
-                WeatherModeStrings: ["Monday\nsunny", "Tuesday\nwindy", "Wednesday\ncloudy", "Thursday\nsnowy", "Friday\nsunny", "Saturday\nsunny", "Sunday\nrainy"],
+                WeatherModeStrings: [
+                  "Monday\nclear",
+                  "Tuesday\nrain",
+                  "Wednesday\nclouds",
+                  "Thursday\nclouds",
+                  "Friday\nrain",
+                  "Saturday\nclear",
+                  "Sunday\nclear",
+                ],
                 width: screenWidth * 0.95,
                 height: 150,
-              )
+              ),
             ],
           ),
         ),

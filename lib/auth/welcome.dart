@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:project_glanz/components/cool-button.dart';
 import '../components/cool-card.dart';
 import 'question.dart';
+import 'package:flutter/services.dart';
+import '../main.dart';
 
-class RegUi extends StatefulWidget {
-  const RegUi({super.key});
+class WelcomeView extends StatefulWidget {
+  const WelcomeView({super.key});
 
   @override
-  _RegUiState createState() => _RegUiState();
+  _WelcomeViewState createState() => _WelcomeViewState();
 }
 
-class _RegUiState extends State<RegUi> {
+class _WelcomeViewState extends State<WelcomeView> {
   double _opacity = 0.0;
 
   @override
@@ -37,31 +39,22 @@ class _RegUiState extends State<RegUi> {
                 imagePath: 'lib/assets/logo.svg',
                 height: 400,
                 width: 340,
-                bottomText: 'Welcome To Glanz !',
+                bottomText: 'Thanks for choosing us !',
                 hideBottomBar: false,
-                bottomSubtext: '#1 Closet Management Application',
+                bottomSubtext: '#GLaNZ',
               ),
             ),
             const SizedBox(height: 20),
             CoolButton(
-              text: "Press here to continue",
+              text: "Go to Home",
               width: 300,
               onPressed: () {
+                // Navigate to the main page instead of closing the app
                 Navigator.pushReplacement(
                   context,
-                  PageRouteBuilder(
-                    pageBuilder:
-                        (context, animation, secondaryAnimation) =>
-                            const Question(),
-                    transitionsBuilder: (
-                      context,
-                      animation,
-                      secondaryAnimation,
-                      child,
-                    ) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
-                  ),
+                  MaterialPageRoute(
+                    builder: (context) => MyApp(),
+                  ), // Navigate to your main app page
                 );
               },
             ),

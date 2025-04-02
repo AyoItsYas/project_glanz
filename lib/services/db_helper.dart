@@ -32,29 +32,45 @@ class DatabaseHelper {
     );
   }
 
-  // Create a new user
   Future<int> createUser(String name, String password) async {
     final db = await database;
-    return await db.insert(
-      'users',
-      {'name': name, 'password': password},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    return await db.insert('users', {
+      'name': name,
+      'password': password,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  // Fetch full name of the first user in the database
   Future<String> getUserFullName() async {
     final db = await database;
     final List<Map<String, dynamic>> result = await db.query(
       'users',
       columns: ['name'],
-      limit: 1, // Fetch only the first user
+      limit: 1,
     );
 
     if (result.isNotEmpty) {
       return result.first['name'] as String;
     } else {
-      return 'Guest'; // Default value if no user is found
+      return 'Guest';
     }
+  }
+
+  Future<bool> checkIfTableExists(String tableName) async {
+    final db = await database;
+    var result = await db.rawQuery(
+      '''
+      SELECT name FROM sqlite_master WHERE type='table' AND name=?;
+    ''',
+      [tableName],
+    );
+
+    return result.isNotEmpty;
+  }
+
+  Future<List<Map<String, dynamic>>> getDataFromTable(String tableName) async {
+    final db = await database;
+    var result = await db.query(tableName);
+
+    return result;
   }
 }

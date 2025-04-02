@@ -22,42 +22,18 @@ class Pill extends StatelessWidget {
   // Define the getWeatherIcon function outside the build method
   Icon getWeatherIcon(String weather) {
     switch (weather.toLowerCase()) {
-      case 'sunny':
-        return Icon(
-          WeatherIcons.day_sunny,
-          color: Colors.yellow,
-          size: 24,
-        );
-      case 'cloudy':
-        return Icon(
-          WeatherIcons.day_cloudy,
-          color: Colors.grey,
-          size: 24,
-        );
-      case 'rainy':
-        return Icon(
-          WeatherIcons.day_rain,
-          color: Colors.blue,
-          size: 24,
-        );
-      case 'snowy':
-        return Icon(
-          WeatherIcons.day_snow,
-          color: Colors.white,
-          size: 24,
-        );
-      case 'windy':
-        return Icon(
-          WeatherIcons.day_windy,
-          color: Colors.blueGrey,
-          size: 24,
-        );
+      case 'clear':
+        return Icon(WeatherIcons.day_sunny, color: Colors.yellow, size: 24);
+      case 'clouds':
+        return Icon(WeatherIcons.day_cloudy, color: Colors.grey, size: 24);
+      case 'rain':
+        return Icon(WeatherIcons.day_rain, color: Colors.blue, size: 24);
+      case 'snow':
+        return Icon(WeatherIcons.day_snow, color: Colors.white, size: 24);
+      case 'wind':
+        return Icon(WeatherIcons.day_windy, color: Colors.blueGrey, size: 24);
       default:
-        return Icon(
-          Icons.help_outline,
-          color: Colors.black,
-          size: 0,
-        );
+        return Icon(Icons.help_outline, color: Colors.black, size: 0);
     }
   }
 
@@ -66,30 +42,31 @@ class Pill extends StatelessWidget {
     if (weatherStrings == null || weatherStrings.isEmpty) {
       return SizedBox.shrink(); // Return an empty widget if the list is null or empty
     }
-    
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: weatherStrings.map((weather) {
-          return Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            child: Column(
-              children: [
-                getWeatherIcon(weather.split("\n")[1]),
-                SizedBox(height: 5),
-                SizedBox(width: 10),
-                Text(
-                  weather.split("\n")[0],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "Unbounded",
-                    fontSize: 20,
-                  ),
+        children:
+            weatherStrings.map((weather) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  children: [
+                    getWeatherIcon(weather.split("\n")[1]),
+                    SizedBox(height: 5),
+                    SizedBox(width: 10),
+                    Text(
+                      weather.split("\n")[0],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Unbounded",
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -130,8 +107,8 @@ class Pill extends StatelessWidget {
                             fontFamily: 'Unbounded',
                             fontSize: 14,
                           ),
-                        )
-                    ]
+                        ),
+                    ],
                   ),
                   getWeatherIcon(weather),
                 ],
@@ -141,9 +118,7 @@ class Pill extends StatelessWidget {
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    showWeatherTable(WeatherModeStrings),
-                  ],
+                  children: [showWeatherTable(WeatherModeStrings)],
                 ),
               ),
           ],
