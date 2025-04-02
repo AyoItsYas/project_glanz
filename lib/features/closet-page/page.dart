@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // Add this package
 import '../../components/cool-card.dart';
 import '../../components/pill.dart';
 import '../../components/color-box.dart';
 
-class ClosetView extends StatelessWidget {
+class ClosetView extends StatefulWidget {
   const ClosetView({super.key});
+
+  @override
+  State<ClosetView> createState() => _ClosetViewState();
+}
+
+class _ClosetViewState extends State<ClosetView> {
+  final PageController _pageController =
+      PageController(); // Controller for PageView
 
   @override
   Widget build(BuildContext context) {
     final cardData = [
       {
-        'imagePath': 'lib/assets/demo.png',
+        'imagePath': 'lib/assets/warning.svg',
         'bottomText': "Usage Statistics",
-        'progressValues': [0.9, 0.33],
+        'progressValues': [0.0, 0.0],
         'progressTexts': ["Cycles", "Times in Laundry"],
       },
       {
-        'imagePath': 'lib/assets/demo2.png',
+        'imagePath': 'lib/assets/warning.svg',
         'bottomText': "Usage Statistics",
-        'progressValues': [0.6, 0.5],
+        'progressValues': [0.0, 0.0],
         'progressTexts': ["Cycles", "Times in Laundry"],
       },
     ];
@@ -28,10 +37,10 @@ class ClosetView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // PageView to swipe between cards
             SizedBox(
               height: 450,
               child: PageView.builder(
+                controller: _pageController,
                 itemCount: cardData.length,
                 itemBuilder: (context, index) {
                   return CoolCard(
@@ -40,21 +49,34 @@ class ClosetView extends StatelessWidget {
                     width: 340,
                     height: 420,
                     bottomText: cardData[index]['bottomText'] as String,
-                    progressValues: List<double>.from(cardData[index]['progressValues'] as List),
-                    progressTexts: List<String>.from(cardData[index]['progressTexts'] as List),
+                    progressValues: List<double>.from(
+                      cardData[index]['progressValues'] as List,
+                    ),
+                    progressTexts: List<String>.from(
+                      cardData[index]['progressTexts'] as List,
+                    ),
                   );
                 },
               ),
             ),
-            SizedBox(height: 10),
-            Pill(
-              text: "15/17"
+            const SizedBox(height: 10),
+            Pill(text: "15/17"),
+            const SizedBox(height: 10),
+
+            // SmoothPageIndicator for dots
+            SmoothPageIndicator(
+              controller: _pageController,
+              count: cardData.length,
+              effect: ExpandingDotsEffect(
+                dotHeight: 8,
+                dotWidth: 8,
+                activeDotColor: Colors.white,
+                dotColor: Colors.grey,
+              ),
             ),
-            SizedBox(height: 10),
-            ColorBox(
-              height: 100,
-              width: 300,
-            ),
+
+            const SizedBox(height: 10),
+            ColorBox(height: 100, width: 300),
           ],
         ),
       ),
