@@ -113,18 +113,21 @@ class _QuestionState extends State<Question> {
                       ),
                       const SizedBox(height: 20),
                       CoolInputBox(
+                        width: 340,
                         placeholder: "Enter Your Full Name",
                         controller: _fullNameController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 20),
                       CoolInputBox(
+                        width: 340,
                         placeholder: "Enter Password",
                         controller: _passwordController,
                         obscureText: true,
                       ),
                       const SizedBox(height: 20),
                       CoolInputBox(
+                        width: 340,
                         placeholder: "Confirm Password",
                         controller: _confirmPasswordController,
                         obscureText: true,
@@ -132,13 +135,13 @@ class _QuestionState extends State<Question> {
                       const SizedBox(height: 30),
                       CoolButton(
                         text: "Create User",
-                        width: 300,
+                        width: 340,
                         onPressed: _createUser,
                       ),
                       const SizedBox(height: 10),
                       CoolButton(
                         text: "Switch User",
-                        width: 300,
+                        width: 340,
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,

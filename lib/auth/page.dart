@@ -45,7 +45,7 @@ class _RegUiState extends State<RegUi> {
             const SizedBox(height: 20),
             CoolButton(
               text: "Press here to continue",
-              width: 300,
+              width: 340,
               onPressed: () {
                 Navigator.pushReplacement(
                   context,

@@ -83,28 +83,32 @@ class _CoolCardState extends State<CoolCard>
         child: Column(
           children: [
             Expanded(
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child:
-                      widget.isRotatable
-                          ? AnimatedBuilder(
-                            animation: _rotationController,
-                            builder: (context, child) {
-                              return Transform.rotate(
-                                angle:
-                                    _rotationController.value *
-                                    2 *
-                                    -3.141592653589793,
-                                child: child,
-                              );
-                            },
-                            child: imageWidget,
-                          )
-                          : imageWidget,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child:
+                        widget.isRotatable
+                            ? AnimatedBuilder(
+                              animation: _rotationController,
+                              builder: (context, child) {
+                                return Transform.rotate(
+                                  angle:
+                                      _rotationController.value *
+                                      2 *
+                                      -3.141592653589793,
+                                  child: child,
+                                );
+                              },
+                              child: imageWidget,
+                            )
+                            : imageWidget,
+                  ),
                 ),
               ),
             ),
+
             if (showBottomBar)
               Container(
                 width: double.infinity,
@@ -126,7 +130,7 @@ class _CoolCardState extends State<CoolCard>
                   children: [
                     if (widget.bottomText != null)
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           widget.bottomText!,
                           style: const TextStyle(
@@ -154,7 +158,7 @@ class _CoolCardState extends State<CoolCard>
                       }),
                     if (widget.bottomSubtext.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           widget.bottomSubtext,
                           style: const TextStyle(

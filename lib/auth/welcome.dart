@@ -47,7 +47,7 @@ class _WelcomeViewState extends State<WelcomeView> {
             const SizedBox(height: 20),
             CoolButton(
               text: "Go to Home",
-              width: 300,
+              width: 340,
               onPressed: () {
                 Navigator.pushReplacement(
                   context,

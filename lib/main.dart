@@ -136,12 +136,15 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: SlideTransition(
-          position: _slideAnimation,
-          child: SvgPicture.asset(
-            'lib/assets/logo.svg', // Ensure the path to your SVG is correct
-            height: 100, // You can adjust the size as needed
+      body: Padding(
+        padding: const EdgeInsets.all(20.0), // Add padding from the edges
+        child: Center(
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: SvgPicture.asset(
+              'lib/assets/logo.svg', // Ensure the path to your SVG is correct
+              height: 100, // You can adjust the size as needed
+            ),
           ),
         ),
       ),

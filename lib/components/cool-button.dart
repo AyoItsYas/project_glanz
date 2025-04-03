@@ -52,26 +52,27 @@ class _CoolButtonState extends State<CoolButton> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: weatherStrings.map((weather) {
-          return Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            child: Column(
-              children: [
-                getWeatherIcon(weather.split("\n")[1]),
-                SizedBox(height: 5),
-                SizedBox(width: 10),
-                Text(
-                  weather.split("\n")[0],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "Unbounded",
-                    fontSize: 20,
-                  ),
+        children:
+            weatherStrings.map((weather) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  children: [
+                    getWeatherIcon(weather.split("\n")[1]),
+                    SizedBox(height: 5),
+                    SizedBox(width: 10),
+                    Text(
+                      weather.split("\n")[0],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "Unbounded",
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -102,7 +103,7 @@ class _CoolButtonState extends State<CoolButton> {
           width: widget.width,
           height: widget.height,
           decoration: BoxDecoration(
-            color: isPressed ? Colors.white : Colors.black,
+            color: isPressed ? Colors.black : Colors.white,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.grey, width: 0.5),
           ),
@@ -118,7 +119,7 @@ class _CoolButtonState extends State<CoolButton> {
                         Text(
                           widget.text,
                           style: TextStyle(
-                            color: isPressed ? Colors.black : Colors.white,
+                            color: isPressed ? Colors.white : Colors.black,
                             fontFamily: 'Unbounded',
                             fontSize: 18,
                           ),
@@ -127,11 +128,11 @@ class _CoolButtonState extends State<CoolButton> {
                           Text(
                             widget.subtext,
                             style: TextStyle(
-                              color: isPressed ? Colors.black54 : Colors.grey,
+                              color: isPressed ? Colors.grey : Colors.black54,
                               fontFamily: 'Unbounded',
                               fontSize: 14,
                             ),
-                          )
+                          ),
                       ],
                     ),
                     getWeatherIcon(widget.weather),
@@ -142,9 +143,7 @@ class _CoolButtonState extends State<CoolButton> {
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      showWeatherTable(widget.WeatherModeStrings),
-                    ],
+                    children: [showWeatherTable(widget.WeatherModeStrings)],
                   ),
                 ),
             ],
