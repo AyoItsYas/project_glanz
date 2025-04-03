@@ -46,6 +46,14 @@ class DatabaseService {
   Future<int> insert<T extends CommonModel>(T model) async {
     final db = await database;
 
+    // final countQuery = await db.rawQuery(
+    //   'SELECT COUNT(*) as count FROM ${model.tableName}',
+    // );
+    // final count = Sqflite.firstIntValue(countQuery) ?? 0;
+    // model.id = count + 1;
+
+    // print('Inserting into table ${model.tableName} with ID: ${model.id}');
+
     await createTable(model);
 
     return await db.insert(
@@ -84,5 +92,22 @@ class DatabaseService {
     await createTable(model);
 
     return await db.delete(model.tableName, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<List<T>> fetchAll<T extends CommonModel>(T model) async {
+    final db = await database;
+
+    await createTable(model);
+
+    final List<Map<String, dynamic>> maps = await db.query(model.tableName);
+
+    return List.generate(maps.length, (i) {
+      return model.fromMap(maps[i]) as T;
+    });
+  }
+
+  Future<void> close() async {
+    final db = await database;
+    await db.close();
   }
 }

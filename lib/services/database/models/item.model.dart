@@ -13,15 +13,6 @@ class ItemModel extends CommonModel {
     'image_path': 'TEXT',
   };
 
-  @override
-  final String id;
-  @override
-  final DateTime createdDate;
-  @override
-  final DateTime modifiedDate;
-  @override
-  final Status status;
-
   final String label;
   final int typeId;
   final String color;
@@ -29,10 +20,6 @@ class ItemModel extends CommonModel {
   final String imagePath;
 
   ItemModel({
-    required this.id,
-    required this.createdDate,
-    required this.modifiedDate,
-    required this.status,
     required this.label,
     required this.typeId,
     required this.color,
@@ -50,5 +37,16 @@ class ItemModel extends CommonModel {
       'material': material,
       'image_path': imagePath,
     };
+  }
+
+  @override
+  ItemModel fromMap(Map<String, dynamic> map) {
+    return ItemModel(
+      label: map['label'],
+      typeId: map['type_id'],
+      color: map['color'],
+      material: map['material'],
+      imagePath: map['image_path'],
+    );
   }
 }
