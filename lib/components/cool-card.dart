@@ -126,7 +126,10 @@ class _CoolCardState extends State<CoolCard>
                   children: [
                     if (widget.bottomText != null)
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 5,
+                        ),
                         child: Text(
                           widget.bottomText!,
                           style: const TextStyle(
@@ -154,7 +157,10 @@ class _CoolCardState extends State<CoolCard>
                       }),
                     if (widget.bottomSubtext.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 5,
+                        ),
                         child: Text(
                           widget.bottomSubtext,
                           style: const TextStyle(

@@ -139,10 +139,7 @@ class _SplashScreenState extends State<SplashScreen>
       body: Center(
         child: SlideTransition(
           position: _slideAnimation,
-          child: SvgPicture.asset(
-            'lib/assets/logo.svg', // Ensure the path to your SVG is correct
-            height: 100, // You can adjust the size as needed
-          ),
+          child: SvgPicture.asset('lib/assets/logo.svg', height: 100),
         ),
       ),
     );
