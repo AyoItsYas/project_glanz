@@ -13,36 +13,28 @@ extension StatusExtension on Status {
   }
 }
 
-class CommonModel {
-  final String id;
-  final DateTime createdDate;
-  final DateTime modifiedDate;
-  final Status status;
+Map<String, String> commonColumns = {
+  'id': 'TEXT PRIMARY KEY',
+  'created_date': 'DATETIME',
+  'modified_date': 'DATETIME',
+  'status': 'TEXT',
+};
 
-  CommonModel({
-    required this.id,
-    required this.createdDate,
-    required this.modifiedDate,
-    required this.status,
-  });
+abstract class CommonModel {
+  String get tableName => 'common_table';
+  Map<String, String> get columns => commonColumns;
+
+  String get id;
+  DateTime get createdDate;
+  DateTime get modifiedDate;
+  Status get status;
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'createdDate': createdDate.toIso8601String(),
-      'modifiedDate': modifiedDate.toIso8601String(),
+      'created_date': createdDate.toIso8601String(),
+      'modified_date': modifiedDate.toIso8601String(),
       'status': status.value,
     };
-  }
-
-  factory CommonModel.fromMap(Map<String, dynamic> map) {
-    return CommonModel(
-      id: map['id'] as String,
-      createdDate: DateTime.parse(map['createdDate'] as String),
-      modifiedDate: DateTime.parse(map['modifiedDate'] as String),
-      status: Status.values.firstWhere(
-        (e) => e.value == map['status'] as String,
-      ),
-    );
   }
 }

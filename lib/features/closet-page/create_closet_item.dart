@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:project_glanz/services/database/database.service.dart';
 import 'package:project_glanz/services/database/models/item.model.dart';
+import 'package:project_glanz/services/database/models/common.model.dart';
 
 class CreateClosetItemPage extends StatefulWidget {
   @override
@@ -13,25 +14,55 @@ class CreateClosetItemPage extends StatefulWidget {
 
 class _CreateClosetItemPageState extends State<CreateClosetItemPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  XFile? _image;
+  final _labelController = TextEditingController();
+  final _typeIdController = TextEditingController();
+  final _colorController = TextEditingController();
+  final _materialController = TextEditingController();
+  File? _image;
+
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedImage = await picker.pickImage(
-      source: ImageSource.camera,
-    );
-    setState(() {
-      _image = pickedImage;
-    });
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
-  void _saveItem() {
+  void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      print('Name: ${_nameController.text}');
-      print('Description: ${_descriptionController.text}');
-      print('Image: ${_image?.path}');
+      final newItem = ItemModel(
+        id: DateTime.now().toString(),
+        label: _labelController.text,
+        typeId: int.parse(_typeIdController.text),
+        color: _colorController.text,
+        material: _materialController.text,
+        imagePath: _image?.path ?? '',
+        createdDate: DateTime.now(),
+        modifiedDate: DateTime.now(),
+        status: Status.AVAILABLE,
+      );
+
+      DatabaseService()
+          .insert(newItem)
+          .then((_) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Item added successfully!')));
+          })
+          .catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to add item: $error')),
+            );
+          });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Item added successfully!')));
+
+      Navigator.pop(context);
     }
   }
 
@@ -45,50 +76,70 @@ class _CreateClosetItemPageState extends State<CreateClosetItemPage> {
           key: _formKey,
           child: ListView(
             children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child:
-                    _image == null
-                        ? Container(
-                          height: 200,
-                          color: Colors.grey[300],
-                          child: Icon(Icons.camera_alt, size: 50),
-                        )
-                        : Image.file(
-                          File(_image!.path),
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-              ),
-              SizedBox(height: 16),
               TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                controller: _labelController,
+                decoration: InputDecoration(labelText: 'Label'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
+                    return 'Please enter a label';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _typeIdController,
+                decoration: InputDecoration(labelText: 'Type ID'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a type ID';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _colorController,
+                decoration: InputDecoration(labelText: 'Color'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a color';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _materialController,
+                decoration: InputDecoration(labelText: 'Material'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a material';
                   }
                   return null;
                 },
               ),
               SizedBox(height: 16),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
-              ),
+              _image == null
+                  ? Text('No image selected.')
+                  : Image.file(_image!, height: 150),
+              ElevatedButton(onPressed: _pickImage, child: Text('Pick Image')),
               SizedBox(height: 16),
-              ElevatedButton(onPressed: _saveItem, child: Text('Save')),
+              ElevatedButton(onPressed: _submitForm, child: Text('Submit')),
             ],
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _labelController.dispose();
+    _typeIdController.dispose();
+    _colorController.dispose();
+    _materialController.dispose();
+    super.dispose();
   }
 }

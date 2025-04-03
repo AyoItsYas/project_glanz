@@ -1,18 +1,32 @@
 import 'common.model.dart';
 
 class ItemType extends CommonModel {
+  @override
+  final String tableName = 'item_type';
+  @override
+  final Map<String, String> columns = {...commonColumns, 'label': 'TEXT'};
+
+  @override
+  final String id;
+  @override
+  final DateTime createdDate;
+  @override
+  final DateTime modifiedDate;
+  @override
+  final Status status;
+
   final String label;
 
   ItemType({
-    required String id,
-    required DateTime createdDate,
-    required DateTime modifiedDate,
-    required Status status,
+    required this.id,
+    required this.createdDate,
+    required this.modifiedDate,
+    required this.status,
     required this.label,
-  }) : super(
-         id: id,
-         createdDate: createdDate,
-         modifiedDate: modifiedDate,
-         status: status,
-       );
+  });
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {...super.toMap(), 'label': label};
+  }
 }

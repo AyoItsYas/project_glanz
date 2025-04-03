@@ -5,11 +5,9 @@ import './models/common.model.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
-  static Database? _database;
+  factory DatabaseService() => _instance;
 
-  factory DatabaseService() {
-    return _instance;
-  }
+  Database? _database;
 
   DatabaseService._internal();
 
@@ -21,59 +19,70 @@ class DatabaseService {
 
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'common_model.db');
-
+    final path = join(dbPath, 'app_database.db');
     return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE common_model (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            description TEXT NOT NULL
-          )
-        ''');
+        // Placeholder for creating tables dynamically
       },
     );
   }
 
-  Future<int> create(CommonModel model) async {
+  Future<void> createTable<T extends CommonModel>(T model) async {
     final db = await database;
-    return await db.insert('common_model', model.toMap());
-  }
+    final tableName = model.tableName;
+    final columns = model.columns;
 
-  Future<List<CommonModel>> readAll() async {
-    final db = await database;
-    final result = await db.query('common_model');
-    return result.map((map) => CommonModel.fromMap(map)).toList();
-  }
+    final columnDefinitions = columns.entries
+        .map((entry) => '${entry.key} ${entry.value}')
+        .join(', ');
 
-  Future<CommonModel?> read(int id) async {
-    final db = await database;
-    final result = await db.query(
-      'common_model',
-      where: 'id = ?',
-      whereArgs: [id],
+    await db.execute(
+      'CREATE TABLE IF NOT EXISTS $tableName ($columnDefinitions)',
     );
-    if (result.isNotEmpty) {
-      return CommonModel.fromMap(result.first);
-    }
-    return null;
   }
 
-  Future<int> update(CommonModel model) async {
+  Future<int> insert<T extends CommonModel>(T model) async {
     final db = await database;
+
+    await createTable(model);
+
+    return await db.insert(
+      model.tableName,
+      model.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> queryAll<T extends CommonModel>(
+    T model,
+  ) async {
+    final db = await database;
+
+    await createTable(model);
+
+    return await db.query(model.tableName);
+  }
+
+  Future<int> update<T extends CommonModel>(T model) async {
+    final db = await database;
+
+    await createTable(model);
+
     return await db.update(
-      'common_model',
+      model.tableName,
       model.toMap(),
       where: 'id = ?',
       whereArgs: [model.id],
     );
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete<T extends CommonModel>(T model, int id) async {
     final db = await database;
-    return await db.delete('common_model', where: 'id = ?', whereArgs: [id]);
+
+    await createTable(model);
+
+    return await db.delete(model.tableName, where: 'id = ?', whereArgs: [id]);
   }
 }
