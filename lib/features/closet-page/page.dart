@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // Add this package
-import '../../components/cool-card.dart';
-import '../../components/pill.dart';
-import '../../components/color-box.dart';
+import 'package:project_glanz/services/database/database.service.dart';
+import 'package:project_glanz/services/database/models/item.model.dart';
+import 'package:project_glanz/services/database/models/item-type.model.dart';
+
+import "./create_closet_item.dart" as create_closet_item;
 
 class ClosetView extends StatefulWidget {
   const ClosetView({super.key});
@@ -12,73 +13,95 @@ class ClosetView extends StatefulWidget {
 }
 
 class _ClosetViewState extends State<ClosetView> {
-  final PageController _pageController =
-      PageController(); // Controller for PageView
+  final PageController _pageController = PageController();
+  late Future<List<ItemModel>> _itemsFuture;
+  late Future<List<ItemTypeModel>> _itemTypesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _itemsFuture = DatabaseService().fetchAll<ItemModel>(
+      ItemModel(color: "", typeId: 0, label: "", material: "", imagePath: ""),
+    );
+
+    _itemTypesFuture = DatabaseService().fetchAll<ItemTypeModel>(
+      ItemTypeModel(label: ""),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cardData = [
-      {
-        'imagePath': 'lib/assets/warning.svg',
-        'bottomText': "Usage Statistics",
-        'progressValues': [0.0, 0.0],
-        'progressTexts': ["Cycles", "Times in Laundry"],
-      },
-      {
-        'imagePath': 'lib/assets/warning.svg',
-        'bottomText': "Usage Statistics",
-        'progressValues': [0.0, 0.0],
-        'progressTexts': ["Cycles", "Times in Laundry"],
-      },
-    ];
-
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 450,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: cardData.length,
-                itemBuilder: (context, index) {
-                  return CoolCard(
-                    imagePath: cardData[index]['imagePath'] as String,
-                    hideBottomBar: false,
-                    width: 340,
-                    height: 420,
-                    bottomText: cardData[index]['bottomText'] as String,
-                    progressValues: List<double>.from(
-                      cardData[index]['progressValues'] as List,
+      appBar: AppBar(title: Text('Closet')),
+      body: FutureBuilder<List<ItemModel>>(
+        future: _itemsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No items available.'));
+          }
+
+          final itemTypes = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Table(
+              border: TableBorder.all(),
+              columnWidths: const {
+                0: FlexColumnWidth(1),
+                1: FlexColumnWidth(2),
+              },
+              children: [
+                TableRow(
+                  decoration: BoxDecoration(color: Colors.grey[300]),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'ID',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    progressTexts: List<String>.from(
-                      cardData[index]['progressTexts'] as List,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Name',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
+                  ],
+                ),
+                ...itemTypes.map((itemType) {
+                  return TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(itemType.id.toString()),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(itemType.label),
+                      ),
+                    ],
                   );
-                },
-              ),
+                }).toList(),
+              ],
             ),
-            const SizedBox(height: 10),
-            Pill(text: "15/17"),
-            const SizedBox(height: 10),
-
-            // SmoothPageIndicator for dots
-            SmoothPageIndicator(
-              controller: _pageController,
-              count: cardData.length,
-              effect: ExpandingDotsEffect(
-                dotHeight: 8,
-                dotWidth: 8,
-                activeDotColor: Colors.white,
-                dotColor: Colors.grey,
-              ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => create_closet_item.CreateClosetItemPage(),
             ),
-
-            const SizedBox(height: 10),
-            ColorBox(height: 100, width: 300),
-          ],
-        ),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
