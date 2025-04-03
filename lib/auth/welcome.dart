@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_glanz/components/cool-button.dart';
 import '../components/cool-card.dart';
-import 'question.dart';
-import 'package:flutter/services.dart';
 import '../main.dart';
 
 class WelcomeView extends StatefulWidget {
@@ -36,12 +34,13 @@ class _WelcomeViewState extends State<WelcomeView> {
               opacity: _opacity,
               duration: Duration(seconds: 1),
               child: const CoolCard(
-                imagePath: 'lib/assets/logo.svg',
-                height: 400,
+                imagePath: 'lib/assets/greeter.pn g',
+                height: 500,
                 width: 340,
-                bottomText: 'Thanks for choosing us !',
+                bottomText: 'A little bit of how to...',
                 hideBottomBar: false,
-                bottomSubtext: '#GLaNZ',
+                bottomSubtext:
+                    '''Our app is designed to make outfit planning effortless by combining fashion, laundry management, and real-time weather updates.''',
               ),
             ),
             const SizedBox(height: 20),
