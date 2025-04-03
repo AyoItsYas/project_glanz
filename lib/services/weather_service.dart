@@ -1,9 +1,8 @@
 import 'package:weather/weather.dart';
 
 class WeatherService {
-  static const String _apiKey =
-      'f2baabef94301d5906bbd3c58df9fc3b'; // You'll need to replace this with your actual API key
-  static const String _city = 'Colombo'; // Default city, you can change this
+  static const String _apiKey = 'f2baabef94301d5906bbd3c58df9fc3b';
+  static const String _city = 'Colombo';
 
   Future<List<Weather>> getWeeklyForecast() async {
     try {
