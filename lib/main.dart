@@ -116,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen>
               onPressed:
                   () => Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) =>  RegUi()),
+                    MaterialPageRoute(builder: (context) => RegUi()),
                   ),
               child: const Text('Sign In or Create Account'),
             ),

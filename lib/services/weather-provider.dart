@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:project_glanz/services/db_helper.dart';
 
 class WeatherProvider {
   static const String _apiKey = "<API_KEY>";
-  static const String _city = "Colombo"; // Change dynamically if needed
 
   Future<Map<String, String>> fetchWeatherData() async {
+    // Fetch the city name from the database
+    String city = await _getLocationFromDatabase();
+
     final String url =
-        "https://api.openweathermap.org/data/2.5/weather?q=$_city&units=metric&appid=$_apiKey";
+        "https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=$_apiKey";
+
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -28,5 +32,10 @@ class WeatherProvider {
         "weatherCondition": "Unknown",
       };
     }
+  }
+
+  Future<String> _getLocationFromDatabase() async {
+    final String location = await DatabaseHelper.instance.getUserLocation();
+    return location.isNotEmpty ? location : "Colombo";
   }
 }

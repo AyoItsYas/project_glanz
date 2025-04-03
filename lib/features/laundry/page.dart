@@ -8,8 +8,16 @@ class LaundryView extends StatelessWidget {
   const LaundryView({super.key});
 
   Future<Map<String, String>> _fetchWeatherData() async {
-    WeatherProvider weatherProvider = WeatherProvider();
-    return await weatherProvider.fetchWeatherData();
+    try {
+      WeatherProvider weatherProvider = WeatherProvider();
+      return await weatherProvider.fetchWeatherData();
+    } catch (e) {
+      if (e.toString().contains('no such table')) {
+        throw 'Set Location First on Settings';
+      } else {
+        throw 'Error fetching weather data: $e';
+      }
+    }
   }
 
   @override
@@ -36,7 +44,7 @@ class LaundryView extends StatelessWidget {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return Text(snapshot.error.toString());
                   } else if (snapshot.hasData) {
                     Map<String, String> weatherData = snapshot.data!;
                     return Row(

@@ -84,13 +84,9 @@ class _QuestionState extends State<Question> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset:
-          true, // Allows UI to adjust when keyboard appears
+      resizeToAvoidBottomInset: true,
       body: GestureDetector(
-        onTap:
-            () =>
-                FocusManager.instance.primaryFocus
-                    ?.unfocus(), // Dismiss keyboard on tap
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.only(

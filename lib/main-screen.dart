@@ -54,6 +54,20 @@ class _MainViewState extends State<MainView>
     );
 
     _animationController.forward();
+
+    // Set loggedInStat to true in the user_status table
+    _setLoggedInStatus();
+  }
+
+  Future<void> _setLoggedInStatus() async {
+    try {
+      // Assuming you have a method in your DatabaseHelper to update the user status
+      await DatabaseHelper.instance.updateLoggedInStatus(
+        true,
+      ); // Set loggedInStat to true
+    } catch (e) {
+      print("Error updating loggedInStat: $e");
+    }
   }
 
   Future<void> _fetchUserName() async {

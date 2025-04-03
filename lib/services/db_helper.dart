@@ -40,18 +40,46 @@ class DatabaseHelper {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  // Authenticate user with the provided username and password
-  Future<bool> authenticateUser(String name, String password) async {
+  Future<String> getUserLocation() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'settings',
+      columns: ['location'],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return result.first['location'] as String;
+    } else {
+      return '';
+    }
+  }
+
+  Future<void> saveUserLocation(String location) async {
+    final db = await database;
+    await db.insert('settings', {
+      'location': location,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> updateLoggedInStatus(bool status) async {
     final db = await database;
 
-    // Query the database for a user with the provided name
+    await db.update(
+      'user_status',
+      {'loggedInStat': status ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [1],
+    );
+  }
+
+  Future<bool> authenticateUser(String name, String password) async {
+    final db = await database;
     final List<Map<String, dynamic>> result = await db.query(
       'users',
       where: 'name = ? AND password = ?',
       whereArgs: [name, password],
     );
-
-    // If the result is not empty, authentication is successful
     return result.isNotEmpty;
   }
 
