@@ -4,21 +4,19 @@ import 'package:project_glanz/components/cool-input-box.dart';
 import '../components/cool-card.dart';
 import '../services/db_helper.dart';
 import 'package:project_glanz/auth/welcome.dart';
-import '../auth/question_switch.dart';
+import '../auth/question.dart';
 
-class Question extends StatefulWidget {
-  const Question({super.key});
+class Question_Switch extends StatefulWidget {
+  const Question_Switch({super.key});
 
   @override
-  _QuestionState createState() => _QuestionState();
+  _QuestionState_Switch createState() => _QuestionState_Switch();
 }
 
-class _QuestionState extends State<Question> {
+class _QuestionState_Switch extends State<Question_Switch> {
   Offset _offset = const Offset(0, 1);
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
 
   @override
   void initState() {
@@ -30,36 +28,43 @@ class _QuestionState extends State<Question> {
     });
   }
 
-  void _createUser() async {
+  // Function to log in the user
+  void _loginUser() async {
     String fullName = _fullNameController.text.trim();
     String password = _passwordController.text;
-    String confirmPassword = _confirmPasswordController.text;
 
-    if (fullName.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      _showDialog("Error", "All fields are required.");
-      return;
-    }
-
-    if (password != confirmPassword) {
-      _showDialog("Error", "Passwords do not match.");
+    if (fullName.isEmpty || password.isEmpty) {
+      _showDialog("Error", "Both fields are required.");
       return;
     }
 
     try {
-      await DatabaseHelper.instance.createUser(fullName, password);
-      _showDialog("Success", "User created successfully!");
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder:
-              (context, animation, secondaryAnimation) => const WelcomeView(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
+      bool isAuthenticated = await DatabaseHelper.instance.authenticateUser(
+        fullName,
+        password,
       );
+
+      if (isAuthenticated) {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder:
+                (context, animation, secondaryAnimation) => const WelcomeView(),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      } else {
+        _showDialog("Error", "Invalid username or password.");
+      }
     } catch (e) {
-      _showDialog("Error", "User creation failed: ${e.toString()}");
+      _showDialog("Error", "Login failed: ${e.toString()}");
     }
   }
 
@@ -84,13 +89,9 @@ class _QuestionState extends State<Question> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset:
-          true, // Allows UI to adjust when keyboard appears
+      resizeToAvoidBottomInset: true,
       body: GestureDetector(
-        onTap:
-            () =>
-                FocusManager.instance.primaryFocus
-                    ?.unfocus(), // Dismiss keyboard on tap
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.only(
@@ -127,17 +128,11 @@ class _QuestionState extends State<Question> {
                         controller: _passwordController,
                         obscureText: true,
                       ),
-                      const SizedBox(height: 20),
-                      CoolInputBox(
-                        placeholder: "Confirm Password",
-                        controller: _confirmPasswordController,
-                        obscureText: true,
-                      ),
                       const SizedBox(height: 30),
                       CoolButton(
-                        text: "Create User",
+                        text: "Log In",
                         width: 300,
-                        onPressed: _createUser,
+                        onPressed: _loginUser,
                       ),
                       const SizedBox(height: 10),
                       CoolButton(
@@ -149,7 +144,7 @@ class _QuestionState extends State<Question> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      const Question_Switch(),
+                                      const Question(),
                               transitionsBuilder: (
                                 context,
                                 animation,

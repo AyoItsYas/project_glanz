@@ -40,6 +40,21 @@ class DatabaseHelper {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  // Authenticate user with the provided username and password
+  Future<bool> authenticateUser(String name, String password) async {
+    final db = await database;
+
+    // Query the database for a user with the provided name
+    final List<Map<String, dynamic>> result = await db.query(
+      'users',
+      where: 'name = ? AND password = ?',
+      whereArgs: [name, password],
+    );
+
+    // If the result is not empty, authentication is successful
+    return result.isNotEmpty;
+  }
+
   Future<String> getUserFullName() async {
     final db = await database;
     final List<Map<String, dynamic>> result = await db.query(
