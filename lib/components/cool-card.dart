@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'progress.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CoolCard extends StatelessWidget {
   final bool hideBottomBar;
@@ -10,8 +11,10 @@ class CoolCard extends StatelessWidget {
   final String? bottomText;
   final MainAxisAlignment alignment;
   final String imagePath;
+  final String bottomSubtext;
 
-  CoolCard({
+  const CoolCard({
+    super.key, 
     this.hideBottomBar = true,
     this.width = 200.0,
     this.height = 150.0,
@@ -20,11 +23,15 @@ class CoolCard extends StatelessWidget {
     this.bottomText,
     this.alignment = MainAxisAlignment.center,
     required this.imagePath,
+    this.bottomSubtext = "", // Add default empty string
   });
 
   @override
   Widget build(BuildContext context) {
     bool showBottomBar = (!hideBottomBar && (progressValues != null || bottomText != null));
+
+    // Check if the imagePath ends with .svg to decide if it's an SVG
+    bool isSvg = imagePath.endsWith('.svg');
 
     return Center(
       child: Container(
@@ -41,12 +48,17 @@ class CoolCard extends StatelessWidget {
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    imagePath,
-                    width: width * 0.8,
-                    height: height * 0.8,
-                    fit: BoxFit.contain,
-                  ),
+                  child: isSvg
+                    ? SvgPicture.asset(
+                        imagePath,
+                        width: width * 0.2,
+                        height: height * 0.2,
+                      )
+                    : Image.asset(
+                        imagePath,
+                        width: width * 0.8,
+                        height: height * 0.8,
+                      ),
                 ),
               ),
             ),
@@ -93,6 +105,19 @@ class CoolCard extends StatelessWidget {
                           ),
                         );
                       }),
+                    if (bottomSubtext.isNotEmpty) 
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          bottomSubtext,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontFamily: 'Unbounded',
+                            fontSize: 14, // smaller size for subtext
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

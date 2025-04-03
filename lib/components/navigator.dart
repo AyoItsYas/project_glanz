@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../features/closet-page/page.dart';
 import '../main-screen.dart';
+import '../features/quick-match/page.dart';
+import '../features/laundry/page.dart';
 
 class CustomNavigator extends StatefulWidget {
-  CustomNavigator({Key? key}) : super(key: key);
+  const CustomNavigator({super.key});
 
   @override
   State<CustomNavigator> createState() => _CustomNavigatorState();
@@ -16,8 +18,8 @@ class _CustomNavigatorState extends State<CustomNavigator> {
   final List<Widget> _pages = [
     MainView(),
     ClosetView(),
-    Center(child: Text('Clothing Page')),
-    Center(child: Text('Laundry Page')),
+    QuickMatchView(),
+    LaundryView(),
     Center(child: Text('Settings Page')),
   ];
 
@@ -57,7 +59,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
               duration: Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               left: _selectedIndex * (MediaQuery.of(context).size.width / 5),
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.of(context).size.width / 5,
                 height: 50,
                 child: Center(
@@ -93,7 +95,7 @@ class _CustomNavigatorState extends State<CustomNavigator> {
     bool isSelected = index == _selectedIndex;
     return GestureDetector(
       onTap: () => _onItemTapped(index),
-      child: Container(
+      child: SizedBox(
         width: 50,
         height: 50,
         child: Icon(

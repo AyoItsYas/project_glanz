@@ -6,11 +6,11 @@ class CustomProgressBar extends StatelessWidget {
   final TextStyle? textStyle; // Optional text style
 
   const CustomProgressBar({
-    Key? key,
+    super.key,
     required this.progress,
     this.text,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
