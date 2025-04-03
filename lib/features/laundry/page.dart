@@ -116,9 +116,9 @@ class _LaundryViewState extends State<LaundryView> {
                       text: "",
                       WeatherModeStrings:
                           _weeklyForecast.take(5).map((weather) {
-                            final date = DateTime.parse(
-                              weather.date.toString(),
-                            );
+                            final date = weather.date;
+                            if (date == null) return "Unknown\nsunny";
+
                             final day =
                                 date.weekday == 1
                                     ? 'Monday'

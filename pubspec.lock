@@ -384,6 +384,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.3.1"
+  weather:
+    dependency: "direct main"
+    description:
+      name: weather
+      sha256: "1420bace46e1e587893f185d715c1a5ded57fdf4fd83ddbd21a12e461ed7d572"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   weather_icons:
     dependency: "direct main"
     description:
