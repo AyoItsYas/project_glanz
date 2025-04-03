@@ -20,12 +20,13 @@ class ItemModel extends CommonModel {
   final String imagePath;
 
   ItemModel({
+    int? id,
     required this.label,
     required this.typeId,
     required this.color,
     required this.material,
     required this.imagePath,
-  });
+  }) : super(id: id);
 
   @override
   Map<String, dynamic> toMap() {
@@ -42,6 +43,7 @@ class ItemModel extends CommonModel {
   @override
   ItemModel fromMap(Map<String, dynamic> map) {
     return ItemModel(
+      id: map['id'],
       label: map['label'],
       typeId: map['type_id'],
       color: map['color'],

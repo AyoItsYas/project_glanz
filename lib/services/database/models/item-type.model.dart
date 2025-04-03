@@ -8,7 +8,7 @@ class ItemTypeModel extends CommonModel {
 
   final String label;
 
-  ItemTypeModel({required this.label});
+  ItemTypeModel({int? id, required this.label}) : super(id: id);
 
   @override
   Map<String, dynamic> toMap() {
@@ -17,6 +17,7 @@ class ItemTypeModel extends CommonModel {
 
   @override
   ItemTypeModel fromMap(Map<String, dynamic> map) {
-    return ItemTypeModel(label: map['label']);
+    print('ItemTypeModel fromMap: $map');
+    return ItemTypeModel(id: map['id'], label: map['label']);
   }
 }

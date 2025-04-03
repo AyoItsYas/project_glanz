@@ -9,7 +9,7 @@ abstract class CommonModel {
   CommonModel({this.id});
 
   Map<String, dynamic> toMap() {
-    return {};
+    return {'id': id};
   }
 
   CommonModel fromMap(Map<String, dynamic> map);

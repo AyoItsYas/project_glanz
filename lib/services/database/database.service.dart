@@ -38,9 +38,11 @@ class DatabaseService {
         .map((entry) => '${entry.key} ${entry.value}')
         .join(', ');
 
-    await db.execute(
-      'CREATE TABLE IF NOT EXISTS $tableName ($columnDefinitions)',
-    );
+    final createTableQuery =
+        'CREATE TABLE IF NOT EXISTS $tableName ($columnDefinitions)';
+    print('Creating table: $createTableQuery');
+
+    await db.execute(createTableQuery);
   }
 
   Future<int> insert<T extends CommonModel>(T model) async {
@@ -52,7 +54,9 @@ class DatabaseService {
     // final count = Sqflite.firstIntValue(countQuery) ?? 0;
     // model.id = count + 1;
 
-    // print('Inserting into table ${model.tableName} with ID: ${model.id}');
+    print('Inserting into table ${model.tableName} with ID: ${model.id}');
+    print("data : ${model.toMap()}");
+    // Check if the table exists
 
     await createTable(model);
 
@@ -100,6 +104,8 @@ class DatabaseService {
     await createTable(model);
 
     final List<Map<String, dynamic>> maps = await db.query(model.tableName);
+
+    print('Fetched ${maps}');
 
     return List.generate(maps.length, (i) {
       return model.fromMap(maps[i]) as T;

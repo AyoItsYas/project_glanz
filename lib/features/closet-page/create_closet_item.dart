@@ -156,6 +156,7 @@ class _CreateClosetItemPageState extends State<CreateClosetItemPage> {
                             if (value != null &&
                                 value.label != 'No items available.') {
                               print(value.id);
+                              print(value.label);
                               _typeIdController.text = value.id.toString();
                             }
                           },
