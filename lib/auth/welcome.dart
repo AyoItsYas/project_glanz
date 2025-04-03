@@ -49,12 +49,9 @@ class _WelcomeViewState extends State<WelcomeView> {
               text: "Go to Home",
               width: 300,
               onPressed: () {
-                // Navigate to the main page instead of closing the app
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => MyApp(),
-                  ), // Navigate to your main app page
+                  MaterialPageRoute(builder: (context) => MyApp()),
                 );
               },
             ),

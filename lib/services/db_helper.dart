@@ -60,7 +60,7 @@ class DatabaseHelper {
     var result = await db.rawQuery(
       '''
       SELECT name FROM sqlite_master WHERE type='table' AND name=?;
-    ''',
+      ''',
       [tableName],
     );
 
@@ -70,7 +70,14 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getDataFromTable(String tableName) async {
     final db = await database;
     var result = await db.query(tableName);
-
     return result;
+  }
+
+  Future<void> deleteDB() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'glanz_db.db');
+
+    await databaseFactory.deleteDatabase(path);
+    _database = null;
   }
 }
