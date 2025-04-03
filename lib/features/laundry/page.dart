@@ -2,91 +2,179 @@ import 'package:flutter/material.dart';
 import '../../components/pill.dart';
 import '../../components/cool-card.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../services/weather-provider.dart';
+import '../../services/weather_service.dart';
+import 'package:weather/weather.dart';
 
-class LaundryView extends StatelessWidget {
+class LaundryView extends StatefulWidget {
   const LaundryView({super.key});
 
-  Future<Map<String, String>> _fetchWeatherData() async {
+  @override
+  State<LaundryView> createState() => _LaundryViewState();
+}
+
+class _LaundryViewState extends State<LaundryView> {
+  final WeatherService _weatherService = WeatherService();
+  List<Weather> _weeklyForecast = [];
+  Weather? _currentWeather;
+  bool _isLoading = true;
+  DateTime? _selectedDay;
+  bool _showImage = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWeatherData();
+  }
+
+  Future<void> _loadWeatherData() async {
     try {
-      WeatherProvider weatherProvider = WeatherProvider();
-      return await weatherProvider.fetchWeatherData();
+      final currentWeather = await _weatherService.getCurrentWeather();
+      final weeklyForecast = await _weatherService.getWeeklyForecast();
+      setState(() {
+        _currentWeather = currentWeather;
+        _weeklyForecast = weeklyForecast;
+        _isLoading = false;
+      });
     } catch (e) {
-      if (e.toString().contains('no such table')) {
-        throw 'Set Location First on Settings';
-      } else {
-        throw 'Error fetching weather data: $e';
-      }
+      print('Error loading weather data: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  String _getWeatherIcon(String? weather) {
+    switch (weather?.toLowerCase()) {
+      case 'clear':
+        return 'sunny';
+      case 'clouds':
+        return 'cloudy';
+      case 'rain':
+        return 'rainy';
+      case 'snow':
+        return 'snowy';
+      default:
+        return 'sunny';
     }
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TableCalendar(
-                firstDay: DateTime.utc(2010, 10, 16),
-                lastDay: DateTime.utc(2030, 3, 14),
-                focusedDay: DateTime.now(),
-                rowHeight: 40.0,
-              ),
-              SizedBox(height: 20),
-              // Use FutureBuilder to load weather data
-              FutureBuilder<Map<String, String>>(
-                future: _fetchWeatherData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  } else if (snapshot.hasData) {
-                    Map<String, String> weatherData = snapshot.data!;
-                    return Row(
+      body: Stack(
+        children: [
+          Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TableCalendar(
+                    firstDay: DateTime.utc(2010, 10, 16),
+                    lastDay: DateTime.utc(2030, 3, 14),
+                    focusedDay: DateTime.now(),
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _showImage = true;
+                      });
+                    },
+                    rowHeight: 40.0,
+                  ),
+                  SizedBox(height: 20),
+                  if (_isLoading)
+                    CircularProgressIndicator()
+                  else if (_currentWeather != null)
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Pill(
-                          text: "${weatherData["weatherCondition"]!} ",
-                          weather: weatherData["weatherCondition"]!,
+                          text: "${_currentWeather!.weatherMain ?? 'Unknown'} ",
+                          weather: _getWeatherIcon(
+                            _currentWeather!.weatherMain,
+                          ),
                           width: screenWidth * 0.45,
                           height: 100,
                         ),
                         SizedBox(width: 20),
                         Pill(
-                          text: "${weatherData["windSpeed"]}",
+                          text: "${_currentWeather!.windSpeed ?? 0}km/h ",
                           weather: 'windy',
                           width: screenWidth * 0.45,
                           height: 100,
                         ),
                       ],
-                    );
-                  }
-                  return Container();
-                },
-              ),
-              SizedBox(height: 20),
-              Pill(
-                text: "",
-                WeatherModeStrings: [
-                  "Monday\nclear",
-                  "Tuesday\nrain",
-                  "Wednesday\nclouds",
-                  "Thursday\nclouds",
-                  "Friday\nrain",
-                  "Saturday\nclear",
-                  "Sunday\nclear",
+                    ),
+                  SizedBox(height: 20),
+                  if (_weeklyForecast.isNotEmpty)
+                    Pill(
+                      text: "",
+                      WeatherModeStrings:
+                          _weeklyForecast.take(5).map((weather) {
+                            final date = DateTime.parse(
+                              weather.date.toString(),
+                            );
+                            final day =
+                                date.weekday == 1
+                                    ? 'Monday'
+                                    : date.weekday == 2
+                                    ? 'Tuesday'
+                                    : date.weekday == 3
+                                    ? 'Wednesday'
+                                    : date.weekday == 4
+                                    ? 'Thursday'
+                                    : date.weekday == 5
+                                    ? 'Friday'
+                                    : date.weekday == 6
+                                    ? 'Saturday'
+                                    : 'Sunday';
+                            return "$day\n${_getWeatherIcon(weather.weatherMain)}";
+                          }).toList(),
+                      width: screenWidth * 0.95,
+                      height: 150,
+                    ),
                 ],
-                width: screenWidth * 0.95,
-                height: 150,
               ),
-            ],
+            ),
           ),
-        ),
+          if (_showImage)
+            Container(
+              color: Colors.black.withOpacity(0.9),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Image.asset(
+                      'lib/assets/demo.png',
+                      width: screenWidth * 0.9,
+                      height: screenHeight * 0.7,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  Positioned(
+                    top: 40,
+                    left: 20,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _showImage = false;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
