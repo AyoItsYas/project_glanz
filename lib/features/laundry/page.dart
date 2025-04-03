@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../components/pill.dart';
-import '../../components/cool-card.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../services/weather_service.dart';
 import 'package:weather/weather.dart';
@@ -90,35 +89,51 @@ class _LaundryViewState extends State<LaundryView> {
                   if (_isLoading)
                     CircularProgressIndicator()
                   else if (_currentWeather != null)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
                       children: [
-                        Pill(
-                          text: "${_currentWeather!.weatherMain ?? 'Unknown'} ",
-                          weather: _getWeatherIcon(
-                            _currentWeather!.weatherMain,
-                          ),
-                          width: screenWidth * 0.45,
-                          height: 100,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Pill(
+                              text:
+                                  "Current\n${_currentWeather!.temperature?.celsius?.toStringAsFixed(1)}°C",
+                              subtext:
+                                  "Feels like: ${_currentWeather!.tempFeelsLike?.celsius?.toStringAsFixed(1)}°C",
+                              weather: _getWeatherIcon(
+                                _currentWeather!.weatherMain,
+                              ),
+                              width: screenWidth * 0.45,
+                              height: 120,
+                            ),
+                            SizedBox(width: 20),
+                            Pill(
+                              text: "Wind\n${_currentWeather!.windSpeed} km/h",
+                              subtext:
+                                  "Humidity: ${_currentWeather!.humidity}%",
+                              weather: 'windy',
+                              width: screenWidth * 0.45,
+                              height: 120,
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 20),
+                        SizedBox(height: 20),
                         Pill(
-                          text: "${_currentWeather!.windSpeed ?? 0}km/h ",
-                          weather: 'windy',
-                          width: screenWidth * 0.45,
+                          text: "Details",
+                          subtext:
+                              "Pressure: ${_currentWeather!.pressure} hPa\nClouds: ${_currentWeather!.cloudiness}%",
+                          width: screenWidth * 0.95,
                           height: 100,
                         ),
                       ],
                     ),
                   SizedBox(height: 20),
                   if (_weeklyForecast.isNotEmpty)
-                    Pill(
-                      text: "",
-                      WeatherModeStrings:
+                    Column(
+                      children:
                           _weeklyForecast.take(5).map((weather) {
-                            final date = DateTime.parse(
-                              weather.date.toString(),
-                            );
+                            final date = weather.date;
+                            if (date == null) return SizedBox.shrink();
+
                             final day =
                                 date.weekday == 1
                                     ? 'Monday'
@@ -133,10 +148,22 @@ class _LaundryViewState extends State<LaundryView> {
                                     : date.weekday == 6
                                     ? 'Saturday'
                                     : 'Sunday';
-                            return "$day\n${_getWeatherIcon(weather.weatherMain)}";
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                              ),
+                              child: Pill(
+                                text:
+                                    "$day\n${weather.temperature?.celsius?.toStringAsFixed(1)}°C",
+                                subtext:
+                                    "Humidity: ${weather.humidity}%\nWind: ${weather.windSpeed} km/h",
+                                weather: _getWeatherIcon(weather.weatherMain),
+                                width: screenWidth * 0.95,
+                                height: 120,
+                              ),
+                            );
                           }).toList(),
-                      width: screenWidth * 0.95,
-                      height: 150,
                     ),
                 ],
               ),
